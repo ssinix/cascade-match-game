@@ -5,6 +5,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <vector>
 using namespace std;
 
 int main() {
@@ -25,6 +26,26 @@ int main() {
     //cout << "Successfully opened.";
 
     string line;
+    vector <vector<char>> mat;
+    int i = 0;
+
+    //Fill the matrix from the txt file
+    while (!input.eof()) {
+        getline(input, line);
+        vector <char> row;
+        for (int j = 0; j < line.length(); j ++) {
+            row.push_back(line[j]);
+        }
+        mat.push_back(row);
+        i++;
+    }
+
+    /*for (const vector<char>& row : mat) {
+        for (char c : row) {
+            cout << c << ' ';
+        }
+        cout << endl;
+    }*/
 
     return 0;
 }
