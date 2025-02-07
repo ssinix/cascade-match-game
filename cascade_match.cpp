@@ -17,8 +17,8 @@ vector<vector<char>> readMatrixFromFile(ifstream& input) {
     while (!input.eof()) {
         getline(input, line);
         vector <char> row;
-        for (int j = 0; j < line.length(); j ++) {
-            row.push_back(line[j]);
+        for (char c : line) {
+            row.push_back(c);
         }
         mat.push_back(row);
         i++;
@@ -27,9 +27,25 @@ vector<vector<char>> readMatrixFromFile(ifstream& input) {
     return mat;
 }
 
+bool validMatrix(const vector<vector<char>>& mat) {
+    bool valid = true;
+    int rowLength = mat[0].size();
+
+    for (const vector<char>& row : mat) {
+        if (row.size() != rowLength)
+            valid = false;
+
+        for (char c : row) {
+            if (!(c == 'X' || c == 'O' || c == 'S'))
+                valid = false;
+        }
+    }
+    return valid;
+}
+
 int main() {
     string filename;
-    cout << "Please enter the file name: ";
+    cout << "Please enter the file name:" << endl;
     cin >> filename;
 
     ifstream input;
@@ -37,13 +53,28 @@ int main() {
 
     while (input.fail()) {
         cout << "The file couldn't be opened." << endl;
-        cout << "Please enter a valid file name: ";
+        cout << "Please enter a valid file name:" << endl;
         cin >> filename;
         input.open(filename);
     }
     //cout << "Successfully opened.";
 
     vector<vector<char>> matrix = readMatrixFromFile(input);
+    input.close();
+
+    if (!validMatrix(matrix)) {
+        cout << "The matrix either has invalid dimensions or contains invalid characters."<< endl;
+        cout << "Exiting the game. Bye bye.";
+        return 0;
+    }
+
+    cout << "The content of the matrix is:" << endl;
+    for (const vector<char>& row : matrix) {
+        for (char c : row) {
+            cout << c;
+        }
+        cout << endl;
+    }
 
     return 0;
 }
