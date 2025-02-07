@@ -8,23 +8,7 @@
 #include <vector>
 using namespace std;
 
-int main() {
-    string filename;
-    cout << "Please enter the file name: ";
-    cin >> filename;
-
-    ifstream input;
-    input.open(filename);
-
-    while (input.fail()) {
-        cout << "The file couldn't be opened." << endl;
-        cout << "Please enter a valid file name: ";
-        cin >> filename;
-        input.open(filename);
-    }
-
-    //cout << "Successfully opened.";
-
+vector<vector<char>> readMatrixFromFile(ifstream& input) {
     string line;
     vector <vector<char>> mat;
     int i = 0;
@@ -40,12 +24,27 @@ int main() {
         i++;
     }
 
-    /*for (const vector<char>& row : mat) {
-        for (char c : row) {
-            cout << c << ' ';
-        }
-        cout << endl;
-    }*/
+    return mat;
+}
+
+int main() {
+    string filename;
+    cout << "Please enter the file name: ";
+    cin >> filename;
+
+    ifstream input;
+    input.open(filename);
+
+    while (input.fail()) {
+        cout << "The file couldn't be opened." << endl;
+        cout << "Please enter a valid file name: ";
+        cin >> filename;
+        input.open(filename);
+    }
+    //cout << "Successfully opened.";
+
+    vector<vector<char>> matrix = readMatrixFromFile(input);
 
     return 0;
 }
+
