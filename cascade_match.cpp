@@ -28,19 +28,31 @@ vector<vector<char>> readMatrixFromFile(ifstream& input) {
 }
 
 bool validMatrix(const vector<vector<char>>& mat) {
-    bool valid = true;
     int rowLength = mat[0].size();
 
     for (const vector<char>& row : mat) {
         if (row.size() != rowLength)
-            valid = false;
+            return false;;
 
         for (char c : row) {
             if (!(c == 'X' || c == 'O' || c == 'S'))
-                valid = false;
+                return false;
         }
     }
-    return valid;
+    return true;
+}
+
+bool validMove(int row_idx, int col_idx, char dir, const vector<vector<char>>& mat) {
+    if (!(dir == 'r' || dir == 'l' || dir == 'u' || dir == 'd')) {
+        cout << "Invalid input. Try again." << endl;
+        return false;
+    }
+    if (row_idx > mat.size() || col_idx > mat[0].size()) {
+        cout << "Invalid coordinates!" << endl;
+    }
+
+
+
 }
 
 int main() {
@@ -74,6 +86,15 @@ int main() {
             cout << c;
         }
         cout << endl;
+    }
+
+    int row_idx, col_idx;
+    char direction;
+    cout << "Enter row, col, and direction (r/l/u/d). Type '0 0 q' to exit." << endl << "Move:" << endl;
+    cin >> row_idx >> col_idx >> direction;
+
+    while (!(row_idx == 0 && col_idx == 0 && direction == 'q')) {
+
     }
 
     return 0;
