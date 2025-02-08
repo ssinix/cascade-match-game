@@ -120,12 +120,16 @@ bool clearMatches(vector<vector<char>>& mat) {
     return cleared;
 }
 
-bool validMove(int row_idx, int col_idx, char dir, const vector<vector<char>>& mat) {
+bool validMove(int row_idx, int col_idx, char dir, vector<vector<char>>& mat) {
     if (!(dir == 'r' || dir == 'l' || dir == 'u' || dir == 'd' || dir == 'q')) {
         cout << "Invalid input. Try again." << endl;
         return false;
     }
-    if (row_idx > mat.size() - 1 || col_idx > mat[0].size() - 1 || row_idx < 0 || col_idx < 0) {
+    if (row_idx < 0 || col_idx < 0) {
+        cout << "Invalid input. Try again." << endl;
+        return false;
+    }
+    if (row_idx > mat.size() - 1 || col_idx > mat[0].size() - 1) {
         cout << "Invalid coordinates!" << endl;
         return false;
     }
@@ -133,9 +137,12 @@ bool validMove(int row_idx, int col_idx, char dir, const vector<vector<char>>& m
         cout << "Move out of bounds!" << endl;
         return false;
     }
-
-
-
+    swapCells(row_idx,col_idx,dir,mat);
+    if (!clearMatches(mat)) {
+        cout << "Invalid move: No match found!" << endl;
+        swapCells(row_idx,col_idx,dir,mat);
+        return false;
+    }
     return true;
 }
 
