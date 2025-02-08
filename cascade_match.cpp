@@ -42,17 +42,52 @@ bool validMatrix(const vector<vector<char>>& mat) {
     return true;
 }
 
+void printMatrix(const vector<vector<char>>& mat) {
+    for (const vector<char>& row : mat) {
+        for (char c : row) {
+            cout << c;
+        }
+        cout << endl;
+    }
+}
+
+void swapCells(int row_idx, int col_idx, char dir,vector<vector<char>>& mat) {
+    char temp = mat[row_idx][col_idx];
+    if (dir == 'l') {
+        mat[row_idx][col_idx] = mat[row_idx][col_idx - 1];
+        mat[row_idx][col_idx - 1] = temp;
+    }
+    else if (dir == 'r') {
+        mat[row_idx][col_idx] = mat[row_idx][col_idx + 1];
+        mat[row_idx][col_idx + 1] = temp;
+    }
+    else if (dir == 'u') {
+        mat[row_idx][col_idx] = mat[row_idx - 1][col_idx];
+        mat[row_idx - 1][col_idx] = temp;
+    }
+    else if (dir == 'd') {
+        mat[row_idx][col_idx] = mat[row_idx + 1][col_idx];
+        mat[row_idx + 1][col_idx] = temp;
+    }
+}
+
 bool validMove(int row_idx, int col_idx, char dir, const vector<vector<char>>& mat) {
-    if (!(dir == 'r' || dir == 'l' || dir == 'u' || dir == 'd')) {
+    if (!(dir == 'r' || dir == 'l' || dir == 'u' || dir == 'd' || dir == 'q')) {
         cout << "Invalid input. Try again." << endl;
         return false;
     }
-    if (row_idx > mat.size() || col_idx > mat[0].size()) {
+    if (row_idx > mat.size() - 1 || col_idx > mat[0].size() - 1 || row_idx < 0 || col_idx < 0) {
         cout << "Invalid coordinates!" << endl;
+        return false;
+    }
+    if ((col_idx == 0 && dir == 'l') || (col_idx == mat[0].size() - 1 && dir == 'r') || (row_idx == 0 && dir == 'u') || (row_idx == mat.size() - 1 && dir == 'd')) {
+        cout << "Move out of bounds!" << endl;
+        return false;
     }
 
 
 
+    return true;
 }
 
 int main() {
@@ -81,12 +116,7 @@ int main() {
     }
 
     cout << "The content of the matrix is:" << endl;
-    for (const vector<char>& row : matrix) {
-        for (char c : row) {
-            cout << c;
-        }
-        cout << endl;
-    }
+    printMatrix(matrix);
 
     int row_idx, col_idx;
     char direction;
@@ -94,7 +124,13 @@ int main() {
     cin >> row_idx >> col_idx >> direction;
 
     while (!(row_idx == 0 && col_idx == 0 && direction == 'q')) {
+        while (!validMove(row_idx,col_idx,direction,matrix)) {
+            cout << "Move:" << endl;
+            cin >> row_idx >> col_idx >> direction;
+        }
 
+        cout << "Move:" << endl;
+        cin >> row_idx >> col_idx >> direction;
     }
 
     return 0;
