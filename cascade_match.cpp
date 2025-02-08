@@ -71,6 +71,32 @@ void swapCells(int row_idx, int col_idx, char dir,vector<vector<char>>& mat) {
     }
 }
 
+void clearMatches(vector<vector<char>>& mat) {
+    vector<int> match_rows, match_cols; // To store match positions
+
+    // Scan each row
+    for (int i = 0; i < mat.size(); i++) {
+        int j = 0;
+        while (j < mat[0].size() - 2) {  // Check 3 at a time
+            if (mat[i][j] == mat[i][j + 1] && mat[i][j] == mat[i][j + 2]) {
+                int k = j;
+                while (k < mat[0].size() && mat[i][k] == mat[i][j]) {
+                    match_rows.push_back(i); // Store row index
+                    match_cols.push_back(k); // Store column index
+                    k++;
+                }
+                j = k; // Move past the matched segment
+            } else {
+                j++;
+            }
+        }
+    }
+
+    for (int idx = 0; idx < match_rows.size(); idx++) {
+        mat[match_rows[idx]][match_cols[idx]] = '-';
+    }
+}
+
 bool validMove(int row_idx, int col_idx, char dir, const vector<vector<char>>& mat) {
     if (!(dir == 'r' || dir == 'l' || dir == 'u' || dir == 'd' || dir == 'q')) {
         cout << "Invalid input. Try again." << endl;
@@ -120,7 +146,7 @@ int main() {
 
     int row_idx, col_idx;
     char direction;
-    cout << "Enter row, col, and direction (r/l/u/d). Type '0 0 q' to exit." << endl << "Move:" << endl;
+    cout << "\nEnter row, col, and direction (r/l/u/d). Type '0 0 q' to exit." << endl << "Move:" << endl;
     cin >> row_idx >> col_idx >> direction;
 
     while (!(row_idx == 0 && col_idx == 0 && direction == 'q')) {
@@ -128,6 +154,15 @@ int main() {
             cout << "Move:" << endl;
             cin >> row_idx >> col_idx >> direction;
         }
+
+        cout << "After swap:" << endl;
+        swapCells(row_idx,col_idx,direction,matrix);
+        printMatrix(matrix);
+        cout << "\nMove successful. Clearing matches..." << endl;
+        cout << "After clearing matches:" << endl;
+        clearMatches(matrix);
+        printMatrix(matrix);
+
 
         cout << "Move:" << endl;
         cin >> row_idx >> col_idx >> direction;
