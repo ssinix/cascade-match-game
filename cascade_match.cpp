@@ -71,14 +71,16 @@ void swapCells(int row_idx, int col_idx, char dir,vector<vector<char>>& mat) {
     }
 }
 
-void clearMatches(vector<vector<char>>& mat) {
+bool clearMatches(vector<vector<char>>& mat) {
+    bool cleared = false;
     vector<int> match_rows, match_cols; // To store match positions
 
-    // Scan each row
+    // Check for row matches (horizontal)
     for (int i = 0; i < mat.size(); i++) {
         int j = 0;
         while (j < mat[0].size() - 2) {  // Check 3 at a time
             if (mat[i][j] == mat[i][j + 1] && mat[i][j] == mat[i][j + 2]) {
+                cleared = true;
                 int k = j;
                 while (k < mat[0].size() && mat[i][k] == mat[i][j]) {
                     match_rows.push_back(i); // Store row index
@@ -92,9 +94,30 @@ void clearMatches(vector<vector<char>>& mat) {
         }
     }
 
+    // Check for column matches (vertical)
+    for (int j = 0; j < mat[0].size(); j++) {
+        int i = 0;
+        while (i < mat.size() - 2) {  // Need at least 3 elements
+            if (mat[i][j] == mat[i + 1][j] && mat[i][j] == mat[i + 2][j]) {
+                cleared = true;
+                // Extend match if possible
+                int k = i;
+                while (k < mat.size() && mat[k][j] == mat[i][j]) {
+                    match_rows.push_back(k);
+                    match_cols.push_back(j);
+                    k++;
+                }
+                i = k; // Skip matched section
+            } else {
+                i++;
+            }
+        }
+    }
+
     for (int idx = 0; idx < match_rows.size(); idx++) {
         mat[match_rows[idx]][match_cols[idx]] = '-';
     }
+    return cleared;
 }
 
 bool validMove(int row_idx, int col_idx, char dir, const vector<vector<char>>& mat) {
