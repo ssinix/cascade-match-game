@@ -223,6 +223,18 @@ int main() {
         // Update matrix with cleared matrix
         matrix = cleared_matrix;
 
+        while (clearMatches(matrix,match_rows,match_cols)) {
+            cout << "\nAfter clearing matches:" << endl;
+            printMatrix(matrix);
+
+            cout << "\nAfter applying gravity:" << endl;
+            applyGravity(matrix);
+            printMatrix(matrix);
+
+            match_rows.clear();
+            match_cols.clear();
+        }
+
         cout << "\nMove:" << endl;
         cin >> row_idx >> col_idx >> direction;
     }
