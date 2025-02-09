@@ -71,9 +71,8 @@ void swapCells(int row_idx, int col_idx, char dir,vector<vector<char>>& mat) {
     }
 }
 
-bool clearMatches(vector<vector<char>>& mat) {
+bool findMatches(vector<vector<char>>& mat, vector<int>& match_rows, vector<int>& match_cols) {
     bool cleared = false;
-    vector<int> match_rows, match_cols; // To store match positions
 
     // Check for row matches (horizontal)
     for (int i = 0; i < mat.size(); i++) {
@@ -113,14 +112,16 @@ bool clearMatches(vector<vector<char>>& mat) {
             }
         }
     }
-
-    for (int idx = 0; idx < match_rows.size(); idx++) {
-        mat[match_rows[idx]][match_cols[idx]] = '-';
-    }
     return cleared;
 }
 
-bool validMove(int row_idx, int col_idx, char dir, vector<vector<char>>& mat) {
+void clearMatches(vector<vector<char>>& mat,const vector<int>& match_rows,const vector<int>& match_cols) {
+    for (int idx = 0; idx < match_rows.size(); idx++) {
+        mat[match_rows[idx]][match_cols[idx]] = '-';
+    }
+}
+
+bool validMove(int row_idx, int col_idx, char dir, vector<vector<char>>& mat, vector<int>& match_rows, vector<int>& match_cols) {
     if (!(dir == 'r' || dir == 'l' || dir == 'u' || dir == 'd' || dir == 'q')) {
         cout << "Invalid input. Try again." << endl;
         return false;
@@ -138,12 +139,15 @@ bool validMove(int row_idx, int col_idx, char dir, vector<vector<char>>& mat) {
         return false;
     }
     swapCells(row_idx,col_idx,dir,mat);
-    if (!clearMatches(mat)) {
+    if (!findMatches(mat,match_rows,match_cols)) {
         cout << "Invalid move: No match found!" << endl;
         swapCells(row_idx,col_idx,dir,mat);
         return false;
     }
     return true;
+}
+
+void applyGravity(vector<vector<char>>& mat) {
 }
 
 int main() {
@@ -179,8 +183,10 @@ int main() {
     cout << "\nEnter row, col, and direction (r/l/u/d). Type '0 0 q' to exit." << endl << "Move:" << endl;
     cin >> row_idx >> col_idx >> direction;
 
+    vector<int> match_rows, match_cols;
+
     while (!(row_idx == 0 && col_idx == 0 && direction == 'q')) {
-        while (!validMove(row_idx,col_idx,direction,matrix)) {
+        while (!validMove(row_idx,col_idx,direction,matrix,match_rows,match_cols)) {
             cout << "Move:" << endl;
             cin >> row_idx >> col_idx >> direction;
         }
@@ -188,13 +194,18 @@ int main() {
         cout << "After swap:" << endl;
         swapCells(row_idx,col_idx,direction,matrix);
         printMatrix(matrix);
+
         cout << "\nMove successful. Clearing matches..." << endl;
         cout << "After clearing matches:" << endl;
-        clearMatches(matrix);
+        clearMatches(matrix,match_rows,match_cols);
+        printMatrix(matrix);
+
+        cout << "\nAfter applying gravity:" << endl;
+        applyGravity(matrix);
         printMatrix(matrix);
 
 
-        cout << "Move:" << endl;
+        cout << "\nMove:" << endl;
         cin >> row_idx >> col_idx >> direction;
     }
 
