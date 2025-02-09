@@ -148,6 +148,16 @@ bool validMove(int row_idx, int col_idx, char dir, vector<vector<char>>& mat, ve
 }
 
 void applyGravity(vector<vector<char>>& mat) {
+    for (int j = 0; j < mat[0].size(); j++) {
+        for (int i = mat.size() - 2; i >= 0; i--) {
+            int k = i;
+            while (k < mat.size() - 1 && mat[k+1][j] == '-') {
+                mat[k+1][j] = mat[k][j];
+                mat[k][j] = '-';
+                k++;
+            }
+        }
+    }
 }
 
 int main() {
@@ -192,7 +202,6 @@ int main() {
         }
 
         cout << "After swap:" << endl;
-        swapCells(row_idx,col_idx,direction,matrix);
         printMatrix(matrix);
 
         cout << "\nMove successful. Clearing matches..." << endl;
@@ -204,11 +213,11 @@ int main() {
         applyGravity(matrix);
         printMatrix(matrix);
 
-
         cout << "\nMove:" << endl;
         cin >> row_idx >> col_idx >> direction;
     }
 
+    cout << "Exiting the game. Bye bye.";
     return 0;
 }
 
