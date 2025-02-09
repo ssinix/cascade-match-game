@@ -122,6 +122,7 @@ void clearMatches(vector<vector<char>>& mat,const vector<int>& match_rows,const 
 }
 
 bool validMove(int row_idx, int col_idx, char dir, vector<vector<char>>& mat, vector<int>& match_rows, vector<int>& match_cols) {
+
     if (!(dir == 'r' || dir == 'l' || dir == 'u' || dir == 'd' || dir == 'q')) {
         cout << "Invalid input. Try again." << endl;
         return false;
@@ -136,6 +137,10 @@ bool validMove(int row_idx, int col_idx, char dir, vector<vector<char>>& mat, ve
     }
     if ((col_idx == 0 && dir == 'l') || (col_idx == mat[0].size() - 1 && dir == 'r') || (row_idx == 0 && dir == 'u') || (row_idx == mat.size() - 1 && dir == 'd')) {
         cout << "Move out of bounds!" << endl;
+        return false;
+    }
+    if ((dir == 'l' && mat[row_idx][col_idx - 1] == '-') || (dir == 'r' && mat[row_idx][col_idx + 1] == '-') || (dir == 'u' && mat[row_idx - 1][col_idx] == '-') || (dir == 'd' && mat[row_idx + 1][col_idx] == '-') || mat[row_idx][col_idx] == '-' && dir != 'q') {
+        cout << "Cannot swap with an empty cell!" << endl;
         return false;
     }
     swapCells(row_idx,col_idx,dir,mat);
@@ -208,6 +213,9 @@ int main() {
         cout << "After clearing matches:" << endl;
         clearMatches(matrix,match_rows,match_cols);
         printMatrix(matrix);
+        // Clear previous matches
+        match_rows.clear();
+        match_cols.clear();
 
         cout << "\nAfter applying gravity:" << endl;
         applyGravity(matrix);
