@@ -71,13 +71,13 @@ void swapCells(int row_idx, int col_idx, char dir,vector<vector<char>>& mat) {
     }
 }
 
-bool findMatches(vector<vector<char>>& mat, vector<int>& match_rows, vector<int>& match_cols) {
-    bool cleared = false;
+bool clearMatches(vector<vector<char>>& mat, vector<int>& match_rows, vector<int>& match_cols) {
+    bool match = false;
     // Check for row matches (horizontal)
     for (int i = 0; i < mat.size(); i++) {
         for (int j = 0; j < mat[0].size() - 2; j++) {  // Check 3 at a time
             if (mat[i][j] != '-' && mat[i][j] == mat[i][j + 1] && mat[i][j] == mat[i][j + 2]) {
-                cleared = true;
+                match = true;
                 int k = j;
                 while (k < mat[0].size() && mat[i][k] == mat[i][j]) {
                     match_rows.push_back(i); // Store row index
@@ -88,11 +88,14 @@ bool findMatches(vector<vector<char>>& mat, vector<int>& match_rows, vector<int>
             }
         }
     }
+    for (int idx = 0; idx < match_rows.size(); idx++) {
+        mat[match_rows[idx]][match_cols[idx]] = '-';
+    }
     // Check for column matches (vertical)
     for (int j = 0; j < mat[0].size(); j++) {
         for (int i = 0; i < mat.size() - 2; i++) {  // Check 3 at a time
             if (mat[i][j] != '-' && mat[i][j] == mat[i + 1][j] && mat[i][j] == mat[i + 2][j]) {
-                cleared = true;
+                match = true;
                 int k = i;
                 while (k < mat.size() && mat[k][j] == mat[i][j]) {
                     match_rows.push_back(k); // Store row index
@@ -103,16 +106,13 @@ bool findMatches(vector<vector<char>>& mat, vector<int>& match_rows, vector<int>
             }
         }
     }
-    return cleared;
-}
-
-void clearMatches(vector<vector<char>>& mat,const vector<int>& match_rows,const vector<int>& match_cols) {
     for (int idx = 0; idx < match_rows.size(); idx++) {
         mat[match_rows[idx]][match_cols[idx]] = '-';
     }
+    return match;
 }
 
-bool validMove(int row_idx, int col_idx, char dir, vector<vector<char>>& mat, vector<int>& match_rows, vector<int>& match_cols) {
+bool validMove(int row_idx, int col_idx, char dir, vector<vector<char>>& mat, vector<int>& match_rows, vector<int>& match_cols, vector<vector<char>>& swapped_vector) {
     if (row_idx == 0 && col_idx == 0 && dir == 'q') {
         return false;
     }
@@ -137,9 +137,11 @@ bool validMove(int row_idx, int col_idx, char dir, vector<vector<char>>& mat, ve
         return false;
     }
     swapCells(row_idx,col_idx,dir,mat);
-    if (!findMatches(mat,match_rows,match_cols) && dir != 'q') {
+    swapped_vector = mat;
+    if (!clearMatches(swapped_vector,match_rows,match_cols) && dir != 'q') {
         cout << "Invalid move: No match found!" << endl;
         swapCells(row_idx,col_idx,dir,mat);
+        swapped_vector.clear();
         return false;
     }
     return true;
@@ -192,9 +194,10 @@ int main() {
     cin >> row_idx >> col_idx >> direction;
 
     vector<int> match_rows, match_cols;
+    vector<vector<char>> cleared_matrix;
 
     while (!(row_idx == 0 && col_idx == 0 && direction == 'q')) {
-        while (!validMove(row_idx,col_idx,direction,matrix,match_rows,match_cols)) {
+        while (!validMove(row_idx,col_idx,direction,matrix,match_rows,match_cols, cleared_matrix)) {
             if (row_idx == 0 && col_idx == 0 && direction == 'q') {
                 cout << "Exiting the game. Bye bye.";
                 return 0;
@@ -208,15 +211,17 @@ int main() {
 
         cout << "\nMove successful. Clearing matches..." << endl;
         cout << "After clearing matches:" << endl;
-        clearMatches(matrix,match_rows,match_cols);
-        printMatrix(matrix);
-        // Clear previous matches
+        // Already cleared when checking move validity
+        printMatrix(cleared_matrix);
+        // Clear previous matches before next move
         match_rows.clear();
         match_cols.clear();
 
         cout << "\nAfter applying gravity:" << endl;
-        applyGravity(matrix);
-        printMatrix(matrix);
+        applyGravity(cleared_matrix);
+        printMatrix(cleared_matrix);
+        // Update matrix with cleared matrix
+        matrix = cleared_matrix;
 
         cout << "\nMove:" << endl;
         cin >> row_idx >> col_idx >> direction;
