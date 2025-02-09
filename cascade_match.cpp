@@ -13,7 +13,7 @@ vector<vector<char>> readMatrixFromFile(ifstream& input) {
     vector <vector<char>> mat;
     int i = 0;
 
-    //Fill the matrix from the txt file
+    // Fill the matrix from the txt file
     while (!input.eof()) {
         getline(input, line);
         vector <char> row;
@@ -73,12 +73,10 @@ void swapCells(int row_idx, int col_idx, char dir,vector<vector<char>>& mat) {
 
 bool findMatches(vector<vector<char>>& mat, vector<int>& match_rows, vector<int>& match_cols) {
     bool cleared = false;
-
     // Check for row matches (horizontal)
     for (int i = 0; i < mat.size(); i++) {
-        int j = 0;
-        while (j < mat[0].size() - 2) {  // Check 3 at a time
-            if (mat[i][j] == mat[i][j + 1] && mat[i][j] == mat[i][j + 2]) {
+        for (int j = 0; j < mat[0].size() - 2; j++) {  // Check 3 at a time
+            if (mat[i][j] != '-' && mat[i][j] == mat[i][j + 1] && mat[i][j] == mat[i][j + 2]) {
                 cleared = true;
                 int k = j;
                 while (k < mat[0].size() && mat[i][k] == mat[i][j]) {
@@ -87,28 +85,21 @@ bool findMatches(vector<vector<char>>& mat, vector<int>& match_rows, vector<int>
                     k++;
                 }
                 j = k; // Move past the matched segment
-            } else {
-                j++;
             }
         }
     }
-
     // Check for column matches (vertical)
     for (int j = 0; j < mat[0].size(); j++) {
-        int i = 0;
-        while (i < mat.size() - 2) {  // Need at least 3 elements
-            if (mat[i][j] == mat[i + 1][j] && mat[i][j] == mat[i + 2][j]) {
+        for (int i = 0; i < mat.size() - 2; i++) {  // Check 3 at a time
+            if (mat[i][j] != '-' && mat[i][j] == mat[i + 1][j] && mat[i][j] == mat[i + 2][j]) {
                 cleared = true;
-                // Extend match if possible
                 int k = i;
                 while (k < mat.size() && mat[k][j] == mat[i][j]) {
-                    match_rows.push_back(k);
-                    match_cols.push_back(j);
+                    match_rows.push_back(k); // Store row index
+                    match_cols.push_back(j); // Store column index
                     k++;
                 }
-                i = k; // Skip matched section
-            } else {
-                i++;
+                i = k; // Move past the matched segment
             }
         }
     }
@@ -122,7 +113,9 @@ void clearMatches(vector<vector<char>>& mat,const vector<int>& match_rows,const 
 }
 
 bool validMove(int row_idx, int col_idx, char dir, vector<vector<char>>& mat, vector<int>& match_rows, vector<int>& match_cols) {
-
+    if (row_idx == 0 && col_idx == 0 && dir == 'q') {
+        return false;
+    }
     if (!(dir == 'r' || dir == 'l' || dir == 'u' || dir == 'd' || dir == 'q')) {
         cout << "Invalid input. Try again." << endl;
         return false;
@@ -144,7 +137,7 @@ bool validMove(int row_idx, int col_idx, char dir, vector<vector<char>>& mat, ve
         return false;
     }
     swapCells(row_idx,col_idx,dir,mat);
-    if (!findMatches(mat,match_rows,match_cols)) {
+    if (!findMatches(mat,match_rows,match_cols) && dir != 'q') {
         cout << "Invalid move: No match found!" << endl;
         swapCells(row_idx,col_idx,dir,mat);
         return false;
@@ -202,6 +195,10 @@ int main() {
 
     while (!(row_idx == 0 && col_idx == 0 && direction == 'q')) {
         while (!validMove(row_idx,col_idx,direction,matrix,match_rows,match_cols)) {
+            if (row_idx == 0 && col_idx == 0 && direction == 'q') {
+                cout << "Exiting the game. Bye bye.";
+                return 0;
+            }
             cout << "Move:" << endl;
             cin >> row_idx >> col_idx >> direction;
         }
