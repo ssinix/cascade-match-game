@@ -8,38 +8,28 @@
 #include <vector>
 using namespace std;
 
-vector<vector<char>> readMatrixFromFile(ifstream& input) {
+bool readValidMatrix(ifstream& input, vector<vector<char>>& mat) {
     string line;
-    vector <vector<char>> mat;
     int i = 0;
+    bool valid = true;
 
     // Fill the matrix from the txt file
     while (!input.eof()) {
         getline(input, line);
         vector <char> row;
         for (char c : line) {
+            if (!(c == 'X' || c == 'O' || c == 'S'))
+                valid = false;
             row.push_back(c);
         }
         mat.push_back(row);
+        int rowLength = mat[0].size();
+        if (row.size() != rowLength)
+            valid = false;
         i++;
     }
 
-    return mat;
-}
-
-bool validMatrix(const vector<vector<char>>& mat) {
-    int rowLength = mat[0].size();
-
-    for (const vector<char>& row : mat) {
-        if (row.size() != rowLength)
-            return false;;
-
-        for (char c : row) {
-            if (!(c == 'X' || c == 'O' || c == 'S'))
-                return false;
-        }
-    }
-    return true;
+    return valid;
 }
 
 void printMatrix(const vector<vector<char>>& mat) {
@@ -176,14 +166,14 @@ int main() {
     }
     //cout << "Successfully opened.";
 
-    vector<vector<char>> matrix = readMatrixFromFile(input);
-    input.close();
+    vector<vector<char>> matrix;
 
-    if (!validMatrix(matrix)) {
+    if (!readValidMatrix(input,matrix)) {
         cout << "The matrix either has invalid dimensions or contains invalid characters."<< endl;
         cout << "Exiting the game. Bye bye.";
         return 0;
     }
+    input.close();
 
     cout << "The content of the matrix is:" << endl;
     printMatrix(matrix);
