@@ -106,9 +106,9 @@ The game is implemented in **C++** using:
 
 
 ## Future Enhancements
-- [ ] Add a **scoring system** based on match size and chains.
-- [ ] Implement a **graphical UI** using SFML or SDL.
-- [ ] Introduce **new shapes or power-ups** (e.g., wildcards, bombs).
+- Add a **scoring system** based on match size and chains.
+- Implement a **graphical UI** using SFML or SDL.
+- Introduce **new shapes or power-ups** (e.g., wildcards, bombs).
 
 ## Acknowledgements
 This project was developed as part of the **CS204 Advanced Programming** course at **Sabancı University**. The implementation follows the requirements specified in the homework assignment.
