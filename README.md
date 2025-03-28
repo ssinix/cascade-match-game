@@ -93,7 +93,7 @@ The game is implemented in **C++** using:
 1. Ensure you have a **C++ compiler** (e.g., `g++`).
 2. Clone the repository:
    ```bash
-   git clone <repo-url>
+   git clone https://github.com/ssinix/cascade-match-game
    ```
 3. Compile the code:
    ```bash
@@ -111,5 +111,5 @@ The game is implemented in **C++** using:
 - Introduce **new shapes or power-ups** (e.g., wildcards, bombs).
 
 ## Acknowledgements
-This project was developed as part of the **CS204 Advanced Programming** course at **Sabancı University**. The implementation follows the requirements specified in the homework assignment.
+This project was developed as part of the **CS204 Advanced Programming** course at **Sabancı University**, Spring 2025.
 
